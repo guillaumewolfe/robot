@@ -25,19 +25,20 @@ jobs:
           python -m pip install --upgrade pip
           pip install flake8
 
-- name: Get list of changed Python files
-  id: get-changed-files
-  run: |
-    BASE_COMMIT=$(git merge-base HEAD origin/main)
-    echo "Base commit: $BASE_COMMIT"
-    files=$(git diff --name-only $BASE_COMMIT HEAD | grep '\.py$')
-    if [[ -z "$files" ]]; then
-      echo "No Python files were changed."
-      echo "::set-output name=files::"
-      exit 0
-    fi
-    echo "Changed files: $files"
-    echo "::set-output name=files::$files"
+      - name: Get list of changed Python files
+        id: get-changed-files
+        run: |
+          BASE_COMMIT=$(git merge-base HEAD origin/main)
+          echo "Base commit: $BASE_COMMIT"
+          files=$(git diff --name-only $BASE_COMMIT HEAD | grep '\.py$')
+          if [[ -z "$files" ]]; then
+            echo "No Python files were changed."
+            echo "::set-output name=files::"
+            exit 0
+          fi
+          echo "Changed files: $files"
+          echo "::set-output name=files::$files"
+          
       - name: Lint changed Python files
         run: |
           files="${{ steps.get-changed-files.outputs.files }}"
