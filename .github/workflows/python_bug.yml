@@ -12,6 +12,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Fetch main branch
+        run: git fetch origin main:main
+
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
@@ -25,7 +28,9 @@ jobs:
       - name: Get list of changed Python files
         id: get-changed-files
         run: |
-          files=$(git diff --name-only $(git merge-base HEAD origin/main) HEAD | grep '\.py$')
+          BASE_COMMIT=$(git merge-base HEAD main)
+          echo "Base commit: $BASE_COMMIT"
+          files=$(git diff --name-only $BASE_COMMIT HEAD | grep '\.py$')
           echo "Changed files: $files"
           echo "::set-output name=files::$files"
 
